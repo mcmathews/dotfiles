@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 
 $ZSH=$HOME/.oh-my-zsh
 
@@ -13,9 +13,9 @@ wget https://raw.githubusercontent.com/mcmathews/dotfiles/master/.gitconfig
 wget https://raw.githubusercontent.com/mcmathews/dotfiles/master/.vimrc
 
 mkdir $ZSH/custom/themes
-cp hotchkis.zsh-theme $ZSH/custom/themes/
-cp .git-prompt.sh $ZSH/
-cp .zshrc $HOME
+cp "hotchkis.zsh-theme" "$ZSH/custom/themes/"
+cp ".git-prompt.sh" "$ZSH/"
+cp ".zshrc" "$HOME"
 
 if [ -f $HOME/.vimrc ]; then
 	echo ".vimrc already exists. Overwrite it? (y/n) "
