@@ -1,6 +1,6 @@
 #!/bin/bash
 
-$ZSH=$HOME/.oh-my-zsh
+ZSH=$HOME/.oh-my-zsh
 
 mkdir setuptmp
 cd setuptmp
