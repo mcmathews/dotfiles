@@ -58,6 +58,7 @@ export PATH="$HOME/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/
 
 source $ZSH/oh-my-zsh.sh
 source $ZSH/.git-prompt.sh
+setopt PROMPT_SUBST
 
 # You may need to manually set your language environment
 # export LANG=en_US.UTF-8
@@ -83,3 +84,9 @@ source $ZSH/.git-prompt.sh
 # Example aliases
 # alias zshconfig="mate ~/.zshrc"
 # alias ohmyzsh="mate ~/.oh-my-zsh"
+
+GIT_PS1_SHOWDIRTYSTATE=1
+GIT_PS1_SHOWSTASHSTATE=1
+GIT_PS1_SHOWUNTRACKEDFILES=1
+GIT_PS1_SHOWUPSTREAM="verbose"
+GIT_PS1_SHOWCOLORHINTS=1
