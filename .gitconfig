@@ -1,3 +1,6 @@
+[core]
+	editor = vim
+
 [user]
 	name = Michael Mathews
 	email = mcmathe1@asu.edu
