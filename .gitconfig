@@ -13,3 +13,6 @@
 	interactive = true
 	status = true
 	branch = true
+
+[push]
+	default = simple
