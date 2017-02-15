@@ -30,7 +30,7 @@ $DOWNLOAD https://raw.githubusercontent.com/mcmathews/dotfiles/master/.vimrc
 
 mkdir $ZSH/custom/themes
 cp "hotchkis.zsh-theme" "$ZSH/custom/themes/"
-cp ".git-prompt.sh" "$ZSH/"
+cp "git-prompt.sh" "$ZSH/custom"
 cp ".zshrc" "$HOME"
 
 if [ -f $HOME/.vimrc ]; then
