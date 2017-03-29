@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 
 if ! which zsh &> /dev/null; then
 	echo "zsh must be installed"
@@ -21,6 +21,8 @@ ZSH=$HOME/.oh-my-zsh
 mkdir setuptmp
 cd setuptmp
 sh -c "$($DOWNLOAD_TO_STDOUT https://raw.github.com/robbyrussell/oh-my-zsh/master/tools/install.sh)"
+
+git clone https://github.com/zsh-users/zsh-syntax-highlighting.git ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-syntax-highlighting
 
 $DOWNLOAD https://raw.githubusercontent.com/mcmathews/dotfiles/master/.git-prompt.sh
 $DOWNLOAD https://raw.githubusercontent.com/mcmathews/dotfiles/master/hotchkis.zsh-theme

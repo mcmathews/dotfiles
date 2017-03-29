@@ -49,7 +49,7 @@ ZSH_THEME="hotchkis"
 # Custom plugins may be added to ~/.oh-my-zsh/custom/plugins/
 # Example format: plugins=(rails git textmate ruby lighthouse)
 # Add wisely, as too many plugins slow down shell startup.
-plugins=(git aws)
+plugins=(git zsh-syntax-highlighting) # Also helpful: aws docker
 
 # User configuration
 
@@ -57,7 +57,7 @@ export PATH="$HOME/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/
 # export MANPATH="/usr/local/man:$MANPATH"
 
 source $ZSH/oh-my-zsh.sh
-source $ZSH/.git-prompt.sh
+source $ZSH_CUSTOM/.git-prompt.sh
 setopt PROMPT_SUBST
 
 # Add custom completions directory
