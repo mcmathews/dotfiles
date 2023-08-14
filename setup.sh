@@ -20,17 +20,19 @@ ZSH=$HOME/.oh-my-zsh
 
 mkdir setuptmp
 cd setuptmp
+
+RUNZSH=no
 sh -c "$($DOWNLOAD_TO_STDOUT https://raw.github.com/robbyrussell/oh-my-zsh/master/tools/install.sh)"
 
 git clone https://github.com/zsh-users/zsh-syntax-highlighting.git ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-syntax-highlighting
 
-$DOWNLOAD https://raw.githubusercontent.com/mcmathews/dotfiles/master/.git-prompt.sh
+$DOWNLOAD https://raw.githubusercontent.com/mcmathews/dotfiles/master/git-prompt.sh
 $DOWNLOAD https://raw.githubusercontent.com/mcmathews/dotfiles/master/hotchkis.zsh-theme
 $DOWNLOAD https://raw.githubusercontent.com/mcmathews/dotfiles/master/.zshrc
 $DOWNLOAD https://raw.githubusercontent.com/mcmathews/dotfiles/master/.gitconfig
 $DOWNLOAD https://raw.githubusercontent.com/mcmathews/dotfiles/master/.vimrc
 
-mkdir $ZSH/custom/themes
+mkdir -p $ZSH/custom/themes
 cp "hotchkis.zsh-theme" "$ZSH/custom/themes/"
 cp "git-prompt.sh" "$ZSH/custom"
 cp ".zshrc" "$HOME"
