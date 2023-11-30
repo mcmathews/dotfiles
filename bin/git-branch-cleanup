@@ -1,0 +1,134 @@
+#!/bin/bash
+
+set -e
+
+delete_branch() {
+  local branch=$1
+
+  # Delete the branch
+  git branch -D "$branch"
+
+  # Delete the local copy of the remote tracking branch if it exists
+  if git show-ref --verify --quiet "refs/remotes/origin/$branch"; then
+    git branch -d -r "origin/$branch"
+  fi
+
+  echo "Deleted branch '$branch'"
+}
+
+# Parse command line options
+while getopts "yb:n" opt; do
+  case $opt in
+    y)
+      bypass_confirmation=true
+      ;;
+    b)
+      new_branch_name=$OPTARG
+      ;;
+    n)
+      no_checkout=true
+      ;;
+    \?)
+      echo "Invalid option: -$OPTARG" >&2
+      exit 1
+      ;;
+  esac
+done
+
+if [[ "$no_checkout" == true && -n "$new_branch_name" ]]; then
+  echo "Invalid option, cannot specify -n and -b"
+  exit 1
+fi
+
+# Fetch the latest changes from the remote repository
+echo "Fetching..."
+git fetch -p
+
+# Get the name of the main or master branch
+default_branch=$(git symbolic-ref refs/remotes/origin/HEAD | sed 's@^refs/remotes/origin/@@')
+
+current_branch=$(git branch --show-current)
+
+# Checkout the default branch if not already on it
+# This prevents losing uncommited changes if the default branch was already checked out
+if [[ "$current_branch" != "$default_branch" ]]; then
+  echo "Checking out $default_branch"
+  git checkout "$default_branch"
+fi
+
+echo "Trying a fast forward merge..."
+git merge --ff-only
+echo
+
+echo "All branches:"
+git branch -l
+echo
+
+# Get the list of branches that have not been merged
+unmerged_branches=$(git branch --no-merged | grep -v "^\*" | awk '{print $1}')
+
+# Iterate over the unmerged branches
+for branch in $unmerged_branches; do
+  # Exclude the main or master branch
+  if [[ "$branch" != "$default_branch" ]]; then
+    echo "Found unmerged branch '$branch'"
+    echo "Checking for PRs based on branch '$branch'..."
+    pr_state=$(gh pr list --base "$default_branch" --head "$branch" --state all --limit 1 --json "state" -q '.[].state')
+
+    if [[ "$pr_state" == "MERGED" || "$pr_state" == "CLOSED" ]]; then
+      echo "PR for branch '$branch' is $pr_state"
+      if [[ "$bypass_confirmation" == true ]]; then
+        delete_branch "$branch"
+      else
+        # Ask for confirmation before deleting the branch
+        echo -n "Delete branch '$branch'? (y/n) "
+        read confirm
+        if [[ "$confirm" == "y" || "$confirm" == "Y" ]]; then
+          delete_branch "$branch"
+        else
+          echo "Skipping deletion of branch '$branch'"
+        fi
+      fi
+    elif [[ -z $pr_state ]]; then
+      echo "No PR found for branch '$branch'. Skipping"
+    else 
+      echo "PR for branch '$branch' is not merged (state: $pr_state). Skipping"
+    fi
+  fi
+done
+
+# Get the list of merged branches
+merged_branches=$(git branch --merged | grep -v "^\*" | awk '{print $1}')
+
+# Iterate over the merged branches
+for branch in $merged_branches; do
+  # Exclude the main or master branch
+  if [[ "$branch" != "$default_branch" ]]; then
+    echo "Found merged branch '$branch'"
+    if [[ "$bypass_confirmation" == true ]]; then
+      delete_branch "$branch"
+    else
+      # Ask for confirmation before deleting the branch
+      echo -n "Delete branch '$branch'? (y/n) "
+      read confirm
+      if [[ "$confirm" == "y" || "$confirm" == "Y" ]]; then
+        delete_branch "$branch"
+      else
+        echo "Skipping deletion of branch '$branch'"
+      fi
+    fi
+  fi
+done
+
+if [[ "$no_checkout" == true ]]; then
+  exit 0
+fi
+
+# Prompt for the name of the new branch if not provided as a command line flag
+if [[ -z "$new_branch_name" ]]; then
+  echo -n "Enter the name of the new branch: "
+  read new_branch_name
+fi
+
+# Create a new branch for new work
+git checkout -b "$new_branch_name"
